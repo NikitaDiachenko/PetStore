@@ -262,7 +262,7 @@
   - Send out GET /pet/{{petId}} request
   
   _Expected result:_
-    - category.id value is present in the response body
+  - category.id value is present in the response body
  
  6) **I want to check category.name value in the POST /pet/{{petId}} response is valid**
  

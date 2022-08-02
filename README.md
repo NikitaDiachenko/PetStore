@@ -259,9 +259,8 @@
     - PetStore environments imported
    
   _Steps:_
-    - Send out GET /pet/{{petId}} request
-   
-		
+  - Send out GET /pet/{{petId}} request
+  
   _Expected result:_
     - category.id value is present in the response body
  

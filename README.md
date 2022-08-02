@@ -258,11 +258,11 @@
     - PetStore collection imported
     - PetStore environments imported
    
-  _Steps:_
-  - Send out GET /pet/{{petId}} request
+    _Steps:_
+    - Send out GET /pet/{{petId}} request
   
-  _Expected result:_
-  - category.id value is present in the response body
+    _Expected result:_
+    - category.id value is present in the response body
  
  6) **I want to check category.name value in the POST /pet/{{petId}} response is valid**
  

@@ -138,7 +138,7 @@
      - PetStore environments imported
     
      _Steps:_ 
-     - Send out POST /pet request with status
+     - Send out POST /pet request
      - Send out the https://petstore.swagger.io/#/pet/uploadFile request with attached .jpg file
      - Send out the https://petstore.swagger.io/#/pet/getPetById request with the id of created pet
    

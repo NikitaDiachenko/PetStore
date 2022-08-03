@@ -7,193 +7,241 @@
 	},
 	"item": [
 		{
-			"name": "createPet",
-			"event": [
+			"name": "CRUDPet",
+			"item": [
 				{
-					"listen": "prerequest",
-					"script": {
-						"exec": [
-							""
+					"name": "createPet",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//status code test\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"//parse response body\r",
+									"var jsonData = pm.response.json();\r",
+									"\r",
+									"//response assertions\r",
+									"pm.test(\"Parameters in the response are valid\", function () {\r",
+									"    pm.expect(jsonData.id).to.eql(pm.environment.get(\"randomInteger\"));\r",
+									"    pm.expect(jsonData.category.id).to.eql(pm.environment.get(\"randomInteger\"));\r",
+									"    pm.expect(jsonData.category.name).to.eql(pm.environment.get(\"randomString\"));\r",
+									"    pm.expect(jsonData.tags[0].id).to.eql(pm.environment.get(\"randomInteger\"));\r",
+									"    pm.expect(jsonData.tags[0].name).to.eql(pm.environment.get(\"randomString\"));\r",
+									"    pm.expect(jsonData.status).to.eql(pm.environment.get(\"randomPetStatus\"));\r",
+									"});\r",
+									"// response schema\r",
+									"const schema = {\r",
+									"    \"type\": \"object\",\r",
+									"    \"properties\": {\r",
+									"        \"id\": { \"type\": \"integer\" },\r",
+									"        \"category\": { \"type\": \"object\" },\r",
+									"        \"name\": { \"type\": \"string\" },\r",
+									"        \"photoUrls\": { \"type\": \"array\" },\r",
+									"        \"tags\": { \"type\": \"array\" },\r",
+									"        \"status\": { \"type\": \"string\" },\r",
+									"    },\r",
+									"    \"required\": [\"name\", \"photoUrls\"]\r",
+									"\r",
+									"}\r",
+									"//validate response according to the schema\r",
+									"pm.test(\"Validate schema\", () => {\r",
+									"    pm.response.to.have.jsonSchema(schema);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
 						],
-						"type": "text/javascript"
-					}
-				},
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"//status code test\r",
-							"pm.test(\"Status code is 200\", function () {\r",
-							"    pm.response.to.have.status(200);\r",
-							"});\r",
-							"//parse response body\r",
-							"var jsonData = pm.response.json();\r",
-							"\r",
-							"//response assertions\r",
-							"pm.test(\"Parameters in the response are valid\", function () {\r",
-							"    pm.expect(jsonData.id).to.eql(pm.environment.get(\"randomInteger\"));\r",
-							"    pm.expect(jsonData.category.id).to.eql(pm.environment.get(\"randomInteger\"));\r",
-							"    pm.expect(jsonData.category.name).to.eql(pm.environment.get(\"randomString\"));\r",
-							"    pm.expect(jsonData.tags[0].id).to.eql(pm.environment.get(\"randomInteger\"));\r",
-							"    pm.expect(jsonData.tags[0].name).to.eql(pm.environment.get(\"randomString\"));\r",
-							"    pm.expect(jsonData.status).to.eql(pm.environment.get(\"randomPetStatus\"));\r",
-							"});\r",
-							"// response schema\r",
-							"const schema = {\r",
-							"    \"type\": \"object\",\r",
-							"    \"properties\": {\r",
-							"        \"id\": { \"type\": \"integer\" },\r",
-							"        \"category\": { \"type\": \"object\" },\r",
-							"        \"name\": { \"type\": \"string\" },\r",
-							"        \"photoUrls\": { \"type\": \"array\" },\r",
-							"        \"tags\": { \"type\": \"array\" },\r",
-							"        \"status\": { \"type\": \"string\" },\r",
-							"    },\r",
-							"    \"required\": [\"name\", \"photoUrls\"]\r",
-							"\r",
-							"}\r",
-							"//validate response according to the schema\r",
-							"pm.test(\"Validate schema\", () => {\r",
-							"    pm.response.to.have.jsonSchema(schema);\r",
-							"});\r",
-							""
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "accept",
-						"value": "application/json"
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"id\": {{randomInteger}}, \n  \"category\": {\n    \"id\": {{randomInteger}},\n    \"name\": \"{{randomString}}\"\n  },\n  \"name\": \"{{randomString}}\",\n  \"photoUrls\": [],\n  \"tags\": [\n    {\n      \"id\": {{randomInteger}},\n      \"name\": \"{{randomString}}\"\n    }\n  ],\n  \"status\": \"{{randomPetStatus}}\"\n}\n"
+						},
+						"url": {
+							"raw": "{{basicUrl}}/pet",
+							"host": [
+								"{{basicUrl}}"
+							],
+							"path": [
+								"pet"
+							]
+						}
 					},
-					{
-						"key": "Content-Type",
-						"value": "application/json"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n  \"id\": {{randomInteger}}, \n  \"category\": {\n    \"id\": {{randomInteger}},\n    \"name\": \"{{randomString}}\"\n  },\n  \"name\": \"{{randomString}}\",\n  \"photoUrls\": [],\n  \"tags\": [\n    {\n      \"id\": {{randomInteger}},\n      \"name\": \"{{randomString}}\"\n    }\n  ],\n  \"status\": \"{{randomPetStatus}}\"\n}\n"
+					"response": []
 				},
-				"url": {
-					"raw": "{{basicUrl}}/pet",
-					"host": [
-						"{{basicUrl}}"
+				{
+					"name": "getPetById",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"//Send POST request to create a pet\r",
+									"pm.sendRequest({\r",
+									"            url: pm.environment.get(\"basicUrl\") + \"/pet\",\r",
+									"            method: \"POST\",\r",
+									"            header: {\r",
+									"                \"Accept\": \"application/json\",\r",
+									"                \"Content-Type\": \"application/json\",\r",
+									"            },\r",
+									"            body: {\r",
+									"                mode: 'raw',\r",
+									"                raw: JSON.stringify(\r",
+									"                    {\r",
+									"                        \"id\": pm.environment.get(\"randomInteger\"),\r",
+									"                        \"category\": {\r",
+									"                        \"id\": pm.environment.get(\"randomInteger\"),\r",
+									"                        \"name\": pm.environment.get(\"randomString\")\r",
+									"                    },\r",
+									"                        \"name\": pm.environment.get(\"randomString\"),\r",
+									"                        \"photoUrls\": [],\r",
+									"                        \"tags\": [\r",
+									"                    {\r",
+									"                        \"id\": pm.environment.get(\"randomInteger\"),\r",
+									"                        \"name\": pm.environment.get(\"randomString\")\r",
+									"                    }\r",
+									"                                ],\r",
+									"                        \"status\": pm.environment.get(\"randomStatus\")\r",
+									"                    })}}, function setPetId(err, response) {\r",
+									"                    pm.environment.set(\"petId\", response.json().id);\r",
+									"                    }\r",
+									"                    )"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//status code test\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"//parse response body\r",
+									"var jsonData = pm.response.json();\r",
+									"\r",
+									"//response assertions\r",
+									"pm.test(\"Parameters in the response are valid\", function () {\r",
+									"    pm.expect(jsonData.id).to.eql(pm.environment.get(\"randomInteger\"));\r",
+									"    pm.expect(jsonData.category.id).to.eql(pm.environment.get(\"randomInteger\"));\r",
+									"    pm.expect(jsonData.category.name).to.eql(pm.environment.get(\"randomString\"));\r",
+									"    pm.expect(jsonData.tags[0].id).to.eql(pm.environment.get(\"randomInteger\"));\r",
+									"    pm.expect(jsonData.tags[0].name).to.eql(pm.environment.get(\"randomString\"));\r",
+									"});\r",
+									"// response schema\r",
+									"const schema = {\r",
+									"    \"type\": \"object\",\r",
+									"    \"properties\": {\r",
+									"        \"id\": { \"type\": \"integer\" },\r",
+									"        \"category\": { \"type\": \"object\" },\r",
+									"        \"name\": { \"type\": \"string\" },\r",
+									"        \"photoUrls\": { \"type\": \"array\" },\r",
+									"        \"tags\": { \"type\": \"array\" },\r",
+									"        \"status\": { \"type\": \"string\" },\r",
+									"    },\r",
+									"    \"required\": [\"id\", \"category\", \"name\", \"photoUrls\", \"tags\"]\r",
+									"\r",
+									"}\r",
+									"//validate response according to the schema\r",
+									"pm.test(\"Validate schema\", () => {\r",
+									"    pm.response.to.have.jsonSchema(schema);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
 					],
-					"path": [
-						"pet"
-					]
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{basicUrl}}/pet/{{petId}}",
+							"host": [
+								"{{basicUrl}}"
+							],
+							"path": [
+								"pet",
+								"{{petId}}"
+							]
+						}
+					},
+					"response": []
 				}
-			},
-			"response": []
-		},
-		{
-			"name": "getPetById",
+			],
 			"event": [
 				{
 					"listen": "prerequest",
 					"script": {
+						"type": "text/javascript",
 						"exec": [
-							"//Send POST request to create a pet\r",
-							"pm.sendRequest({\r",
-							"            url: pm.environment.get(\"basicUrl\") + \"/pet\",\r",
-							"            method: \"POST\",\r",
-							"            header: {\r",
-							"                \"Accept\": \"application/json\",\r",
-							"                \"Content-Type\": \"application/json\",\r",
-							"            },\r",
-							"            body: {\r",
-							"                mode: 'raw',\r",
-							"                raw: JSON.stringify(\r",
-							"                    {\r",
-							"                        \"id\": pm.environment.get(\"randomInteger\"),\r",
-							"                        \"category\": {\r",
-							"                        \"id\": pm.environment.get(\"randomInteger\"),\r",
-							"                        \"name\": pm.environment.get(\"randomString\")\r",
-							"                    },\r",
-							"                        \"name\": pm.environment.get(\"randomString\"),\r",
-							"                        \"photoUrls\": [],\r",
-							"                        \"tags\": [\r",
-							"                    {\r",
-							"                        \"id\": pm.environment.get(\"randomInteger\"),\r",
-							"                        \"name\": pm.environment.get(\"randomString\")\r",
-							"                    }\r",
-							"                                ],\r",
-							"                        \"status\": pm.environment.get(\"randomStatus\")\r",
-							"                    })}}, function setPetId(err, response) {\r",
-							"                    pm.environment.set(\"petId\", response.json().id);\r",
-							"                    }\r",
-							"                    )"
-						],
-						"type": "text/javascript"
+							"//generate random Integer",
+							"function getRandomInt(max) {",
+							"  return Math.floor(Math.random() * max);",
+							"}",
+							"pm.environment.set(\"randomInteger\", getRandomInt(99999));",
+							"",
+							"",
+							"//generate random String",
+							"function randomString(length) {",
+							"    var result           = '';",
+							"    var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';",
+							"    var charactersLength = characters.length;",
+							"    for ( var i = 0; i < length; i++ ) {",
+							"      result += characters.charAt(Math.floor(Math.random() * ",
+							" charactersLength));",
+							"   }",
+							"   return result;",
+							"}",
+							"pm.environment.set(\"randomString\", randomString(12))",
+							"",
+							"//Statuses array",
+							"var petStatus = [\"available\", \"pending\", \"sold\"];",
+							"const randomStatus = Math.floor(Math.random() * petStatus.length);",
+							"pm.environment.set(\"randomPetStatus\", petStatus[randomStatus])"
+						]
 					}
 				},
 				{
 					"listen": "test",
 					"script": {
+						"type": "text/javascript",
 						"exec": [
-							"//status code test\r",
-							"pm.test(\"Status code is 200\", function () {\r",
-							"    pm.response.to.have.status(200);\r",
-							"});\r",
-							"//parse response body\r",
-							"var jsonData = pm.response.json();\r",
-							"\r",
-							"//response assertions\r",
-							"pm.test(\"Parameters in the response are valid\", function () {\r",
-							"    pm.expect(jsonData.id).to.eql(pm.environment.get(\"randomInteger\"));\r",
-							"    pm.expect(jsonData.category.id).to.eql(pm.environment.get(\"randomInteger\"));\r",
-							"    pm.expect(jsonData.category.name).to.eql(pm.environment.get(\"randomString\"));\r",
-							"    pm.expect(jsonData.tags[0].id).to.eql(pm.environment.get(\"randomInteger\"));\r",
-							"    pm.expect(jsonData.tags[0].name).to.eql(pm.environment.get(\"randomString\"));\r",
-							"});\r",
-							"// response schema\r",
-							"const schema = {\r",
-							"    \"type\": \"object\",\r",
-							"    \"properties\": {\r",
-							"        \"id\": { \"type\": \"integer\" },\r",
-							"        \"category\": { \"type\": \"object\" },\r",
-							"        \"name\": { \"type\": \"string\" },\r",
-							"        \"photoUrls\": { \"type\": \"array\" },\r",
-							"        \"tags\": { \"type\": \"array\" },\r",
-							"        \"status\": { \"type\": \"string\" },\r",
-							"    },\r",
-							"    \"required\": [\"id\", \"category\", \"name\", \"photoUrls\", \"tags\"]\r",
-							"\r",
-							"}\r",
-							"//validate response according to the schema\r",
-							"pm.test(\"Validate schema\", () => {\r",
-							"    pm.response.to.have.jsonSchema(schema);\r",
-							"});\r",
 							""
-						],
-						"type": "text/javascript"
+						]
 					}
 				}
-			],
-			"request": {
-				"method": "GET",
-				"header": [
-					{
-						"key": "accept",
-						"value": "application/json"
-					}
-				],
-				"url": {
-					"raw": "{{basicUrl}}/pet/{{petId}}",
-					"host": [
-						"{{basicUrl}}"
-					],
-					"path": [
-						"pet",
-						"{{petId}}"
-					]
-				}
-			},
-			"response": []
+			]
 		}
 	],
 	"event": [
@@ -202,30 +250,7 @@
 			"script": {
 				"type": "text/javascript",
 				"exec": [
-					"//generate random Integer",
-					"function getRandomInt(max) {",
-					"  return Math.floor(Math.random() * max);",
-					"}",
-					"pm.environment.set(\"randomInteger\", getRandomInt(99999));",
-					"",
-					"",
-					"//generate random String",
-					"function randomString(length) {",
-					"    var result           = '';",
-					"    var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';",
-					"    var charactersLength = characters.length;",
-					"    for ( var i = 0; i < length; i++ ) {",
-					"      result += characters.charAt(Math.floor(Math.random() * ",
-					" charactersLength));",
-					"   }",
-					"   return result;",
-					"}",
-					"pm.environment.set(\"randomString\", randomString(12))",
-					"",
-					"//Statuses array",
-					"var petStatus = [\"available\", \"pending\", \"sold\"];",
-					"const randomStatus = Math.floor(Math.random() * petStatus.length);",
-					"pm.environment.set(\"randomPetStatus\", petStatus[randomStatus])"
+					""
 				]
 			}
 		},

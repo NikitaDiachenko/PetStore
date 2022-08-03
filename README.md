@@ -1,4 +1,4 @@
-**NOTE. The pre-request scripts were written on the level of folder (CRUDPets)**
+**NOTE. The pre-request scripts were written on the level of folder (CRUDPet)**
 
 **Test Cases for POST "https://petstore.swagger.io/v2/pet".**
 
